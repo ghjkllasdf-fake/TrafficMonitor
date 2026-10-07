@@ -36,7 +36,11 @@ jobs:
       - name: Verify exact patch and versions
         run: node build/verify-source.mjs
       - name: Audit self-tests
-        run: node build/audit.mjs self-test
+        run: |
+          node build/audit.mjs self-test
+          if ($LASTEXITCODE -ne 0) { throw 'Audit self-tests failed' }
+          node build/normalize-vendor-paths.test.mjs
+          if ($LASTEXITCODE -ne 0) { throw 'PE normalization tests failed' }
       - name: Clean build, binary audit and portable ZIP
         shell: powershell
         run: ./build/build-release.ps1 -Architecture '${{ matrix.architecture }}' -Edition '${{ matrix.edition }}'

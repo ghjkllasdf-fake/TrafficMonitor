@@ -43,7 +43,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'MSBuild failed; no package was produced.' }
     $out = if ($Architecture -eq 'x86') { Join-Path $root "Bin\$configuration" } else { Join-Path $root "Bin\$Architecture\$configuration" }
     $exe = Join-Path $out 'TrafficMonitor.exe'
-    node build/normalize-vendor-paths.mjs $exe
+    node build/normalize-vendor-paths.mjs $exe (Join-Path $out 'pe-normalization.json')
     if ($LASTEXITCODE -ne 0) { throw 'Vendor diagnostic path normalization failed.' }
     node build/audit.mjs binary $exe
     if ($LASTEXITCODE -ne 0) { throw 'Built executable failed binary audit.' }

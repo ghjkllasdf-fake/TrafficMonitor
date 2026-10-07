@@ -5,6 +5,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
+Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $root = Split-Path $PSScriptRoot -Parent
 Set-Location $root
@@ -20,6 +21,7 @@ $exe = Join-Path $out 'TrafficMonitor.exe'
 if ((Get-FileHash $exe).Hash -ne $proof.executableSha256) { throw 'Executable changed after build.' }
 if ((Get-Item $exe).VersionInfo.FileVersion -ne '1.86.1.0') { throw 'Wrong executable version.' }
 $files = [ordered]@{ 'TrafficMonitor.exe' = $exe; 'LICENSE' = (Join-Path $root 'LICENSE'); 'LICENSE_CN' = (Join-Path $root 'LICENSE_CN'); 'FORK-RELEASE.md' = (Join-Path $root 'FORK-RELEASE.md'); 'fork-build.json' = (Join-Path $out 'fork-build.json') }
+$files['pe-normalization.json'] = Join-Path $out 'pe-normalization.json'
 if ($Edition -eq 'Full') {
     $files['OpenHardwareMonitorApi.dll'] = Join-Path $out 'OpenHardwareMonitorApi.dll'
     foreach ($dependency in @('LibreHardwareMonitorLib.dll', 'HidSharp.dll', 'HidSharp-LICENSE.txt', 'LibreHardwareMonitor-LICENSE.html', 'dependency-build.json')) {

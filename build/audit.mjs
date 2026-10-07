@@ -21,7 +21,7 @@ const rules = [
   ['private-home', /\b[A-Z]:[\\/](?:Users|Documents and Settings)[\\/][^\s"<>]+|\/(?:home|Users)\/[^\s"<>]+/i],
 ];
 const binaryRules = [
-  ['absolute-path', /\b[A-Z]:[\\/](?!\/)[\x20-\x21\x23-\x3b\x3d\x3f-\x7e]{3,}/i],
+  ['absolute-path', /\b[A-Z]:[\\/][A-Za-z0-9_. ()$~@%+-]{3,}(?:[\\/][A-Za-z0-9_. ()$~@%+-]+)*(?=\0|$)/i],
   ['pdb-reference', /[\w.-]+\.pdb\b/i],
 ];
 function findings(bytes, binary = false) {
@@ -74,6 +74,9 @@ function selfTest() {
   // Machine code/resource bytes are not filesystem strings. Require printable
   // path text; private-home and PDB detection remain independent and Unicode-aware.
   assert.deepEqual(findings(Buffer.from([80, 58, 92, 255, 1, 2, 3, 4]), true), []);
+  assert.deepEqual(findings(Buffer.from('X:\\' + '[d?h?l?p?t?x?' + '\u0001'), true), []);
+  assert.ok(findings(Buffer.from('D:' + '\\build\\file.cpp\0trailer'), true).includes('absolute-path'));
+  assert.ok(findings(Buffer.from('C:' + '\\Users\\用户\\资料.txt', 'utf16le'), true).includes('private-home'));
   const pe = Buffer.alloc(1024);
   pe.writeUInt16LE(0x5a4d); pe.writeUInt32LE(128, 0x3c); pe.writeUInt32LE(0x4550, 128);
   pe.writeUInt16LE(1, 134); pe.writeUInt16LE(240, 148); pe.writeUInt16LE(0x20b, 152);
