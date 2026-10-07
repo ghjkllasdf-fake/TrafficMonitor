@@ -56,8 +56,10 @@ function debugTypes(bytes) {
 function checkBinary(file) {
   const bytes = fs.readFileSync(file);
   const found = findings(bytes, true);
-  // IMAGE_DEBUG_TYPE_REPRO (16) has no paths; reject CodeView and embedded PDBs.
-  if (debugTypes(bytes).some(type => type !== 16)) found.push('debug-directory');
+  // POGO (13), ILTCG (14) and REPRO (16) are linker optimization/reproducibility
+  // metadata, not source symbols. Still scan all bytes for paths and secrets.
+  // Reject CodeView, embedded PDBs and every unrecognized debug record type.
+  if (debugTypes(bytes).some(type => ![13, 14, 16].includes(type))) found.push('debug-directory');
   return found;
 }
 function selfTest() {
