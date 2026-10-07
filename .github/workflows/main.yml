@@ -44,6 +44,10 @@ jobs:
       - name: Clean build, binary audit and portable ZIP
         shell: powershell
         run: ./build/build-release.ps1 -Architecture '${{ matrix.architecture }}' -Edition '${{ matrix.edition }}'
+      - name: Isolated portable runtime smoke test
+        if: matrix.architecture != 'ARM64EC'
+        shell: powershell
+        run: ./build/smoke-release.ps1 -Architecture '${{ matrix.architecture }}' -Edition '${{ matrix.edition }}'
       - name: Upload verified distribution only
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -51,5 +55,6 @@ jobs:
           path: |
             dist/TrafficMonitor_V1.86.1_*.zip
             dist/TrafficMonitor_V1.86.1_*.zip.sha256
+            dist/TrafficMonitor_V1.86.1_*.zip.smoke.json
           if-no-files-found: error
           retention-days: 14
