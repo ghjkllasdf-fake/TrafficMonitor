@@ -39,7 +39,7 @@ New-Item -ItemType Directory -Force (Join-Path $buildDir 'temp'), (Join-Path $bu
 $oldTemp = $env:TEMP; $oldTmp = $env:TMP
 try {
     $env:TEMP = Join-Path $buildDir 'temp'; $env:TMP = $env:TEMP
-    & $msbuild.Source $solution /t:Rebuild /m /nologo "/p:Configuration=$configuration" "/p:Platform=$Architecture" /p:PlatformToolset=v143 "/p:ForceImportBeforeCppTargets=$PSScriptRoot\ForkRelease.targets" "/p:UserRootDir=$buildDir\empty-user-props\" "/p:ForkBuildDate=$date"
+    & $msbuild.Source $solution /t:Rebuild /m /nologo "/p:Configuration=$configuration" "/p:Platform=$Architecture" /p:PlatformToolset=v143 /p:UseOfMfc=Static "/p:ForceImportBeforeCppTargets=$PSScriptRoot\ForkRelease.targets" "/p:UserRootDir=$buildDir\empty-user-props\" "/p:ForkBuildDate=$date"
     if ($LASTEXITCODE -ne 0) { throw 'MSBuild failed; no package was produced.' }
     $out = if ($Architecture -eq 'x86') { Join-Path $root "Bin\$configuration" } else { Join-Path $root "Bin\$Architecture\$configuration" }
     $exe = Join-Path $out 'TrafficMonitor.exe'
