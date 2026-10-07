@@ -13,7 +13,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <AdditionalOptions>/Brepro /experimental:deterministic /pathmap:&quot;$(SolutionDir)=src/,$(VCInstallDir)=toolchain/vc/,$(WindowsSdkDir)=toolchain/sdk/&quot; %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Brepro /experimental:deterministic /pathmap:&quot;$(SolutionDir)=src/&quot; /pathmap:&quot;$(VCInstallDir)=toolchain/vc/&quot; /pathmap:&quot;$(WindowsSdkDir)=toolchain/sdk/&quot; %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary Condition="'$(ProjectName)'=='TrafficMonitor'">MultiThreaded</RuntimeLibrary>
       <RuntimeLibrary Condition="'$(ProjectName)'=='OpenHardwareMonitorApi'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
