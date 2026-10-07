@@ -13,12 +13,13 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <AdditionalOptions>/Brepro /pathmap:&quot;$(SolutionDir)=src/&quot; %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Brepro /experimental:deterministic /pathmap:&quot;$(SolutionDir)=src/&quot; %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary Condition="'$(ProjectName)'=='TrafficMonitor'">MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(ProjectName)'=='OpenHardwareMonitorApi'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalOptions>/Brepro %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Brepro /DEBUG:NONE %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
       <Command Condition="'$(ProjectName)'=='TrafficMonitor'">echo $(ForkBuildDate) &gt; "$(ProjectDir)compile_time.txt"</Command>
