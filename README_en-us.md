@@ -1,3 +1,5 @@
+This project is a fork of [zhongyang219/TrafficMonitor](https://github.com/zhongyang219/TrafficMonitor), currently focused on fixing monitoring information display on vertical taskbars in Windows 11.
+
 **[简体中文](./README.md) | English**
 
 [![Badge](https://img.shields.io/badge/link-996.icu-%23FF4D5B.svg?style=flat-square)](https://996.icu/#/en_US)

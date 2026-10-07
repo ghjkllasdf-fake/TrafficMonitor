@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Imported after project definitions, only by build-release.ps1. -->
+  <PropertyGroup>
+    <LinkIncremental>false</LinkIncremental>
+    <UseOfMfc Condition="'$(ProjectName)'=='TrafficMonitor'">Static</UseOfMfc>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(ProjectName)'=='OpenHardwareMonitorApi'">
+    <Reference Update="LibreHardwareMonitorLib">
+      <HintPath>$(MSBuildThisFileDirectory)..\artifacts\dependencies\bin\LibreHardwareMonitorLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <AdditionalOptions>/Brepro /experimental:deterministic /pathmap:&quot;$(SolutionDir)=src/&quot; /pathmap:&quot;$(VCInstallDir)=toolchain/vc/&quot; /pathmap:&quot;$(WindowsSdkDir)=toolchain/sdk/&quot; %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeLibrary Condition="'$(ProjectName)'=='TrafficMonitor'">MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(ProjectName)'=='OpenHardwareMonitorApi'">MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalOptions>/Brepro /DEBUG:NONE %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PreBuildEvent>
+      <Command Condition="'$(ProjectName)'=='TrafficMonitor'">echo $(ForkBuildDate) &gt; "$(ProjectDir)compile_time.txt"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+</Project>
