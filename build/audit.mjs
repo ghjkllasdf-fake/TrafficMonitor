@@ -82,7 +82,14 @@ else if (mode === 'binary') {
   let failed = false;
   for (const file of args) {
     const found = checkBinary(file);
-    console.log(JSON.stringify({ file: path.basename(file), findings: found }));
+    const bytes = fs.readFileSync(file);
+    const pathShapes = [bytes.toString('utf8'), bytes.toString('utf16le')].flatMap(text =>
+      [...text.matchAll(new RegExp(binaryRules[0][1].source, 'gi'))].map(match => ({
+        drive: match[0].slice(0, 2),
+        segments: match[0].split(/[\\/]/).length,
+        basename: path.win32.basename(match[0]).replace(/[^a-zA-Z0-9_. -]/g, '?').slice(0, 80),
+      })));
+    console.log(JSON.stringify({ file: path.basename(file), findings: found, debugTypes: debugTypes(bytes), pathShapes }));
     failed ||= found.length > 0;
   }
   process.exitCode = failed ? 1 : 0;
