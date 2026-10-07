@@ -1,3 +1,5 @@
+本项目 fork 自 [zhongyang219/TrafficMonitor](https://github.com/zhongyang219/TrafficMonitor)，目前主要修复 Windows 11 竖向任务栏中的监控信息显示问题。
+
 **简体中文 | [English](./README_en-us.md)**
 
 [![Badge](https://img.shields.io/badge/link-996.icu-%23FF4D5B.svg?style=flat-square)](https://996.icu/#/en_US)
