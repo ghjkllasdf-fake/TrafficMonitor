@@ -300,3 +300,6 @@ __pycache__/
 !/TrafficMonitor/language/*.ini
 *.diagsession
 enc_temp*
+
+# Isolated fork release outputs
+/dist/

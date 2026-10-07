@@ -1,109 +1,43 @@
-name: Release CI
+name: Fork release CI
 on:
   push:
-    tags: ['v*']
+    branches: ['fix/win11-vertical-taskbar-1.86.1']
+  pull_request:
+    branches: [master]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-
-  x64_build:
-    runs-on: windows-latest
-
+  lite:
+    if: github.repository == 'ghjkllasdf-fake/TrafficMonitor'
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: [x64, x86, ARM64EC]
     steps:
-    - uses: actions/checkout@v3
-      
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
-      
-    - name: Run msbuild
-      run: msbuild TrafficMonitor_Lite.sln -p:configuration="Release (lite)" -p:platform=x64 -p:platformToolset=v143
-      
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.0.2
-      id: current-time
-      with:
-        format: YYYYMMDD_HHmmss
-        utcOffset: "+08:00"
-      
-    - name : Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: x64_${{ steps.current-time.outputs.formattedTime }}_TrafficMonitor
-        path: |
-          Bin/x64/Release (lite)/TrafficMonitor.exe
-          Bin/x64/Release (lite)/*.dll
-
-    - name : Upload pdb files
-      uses: actions/upload-artifact@v4
-      with:
-        name: x64_${{ steps.current-time.outputs.formattedTime }}_pdb
-        path: Bin/x64/Release (lite)/*.pdb
-
-  x86_build:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
-      
-    - name: Run msbuild
-      run: msbuild TrafficMonitor_Lite.sln -p:configuration="Release (lite)" -p:platform=x86 -p:platformToolset=v143
-      
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.0.2
-      id: current-time
-      with:
-        format: YYYYMMDD_HHmmss
-        utcOffset: "+08:00"
-      
-    - name : Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: x86_${{ steps.current-time.outputs.formattedTime }}_TrafficMonitor
-        path: |
-          Bin/Release (lite)/TrafficMonitor.exe
-          Bin/Release (lite)/*.dll
-      
-    - name : Upload pdb files
-      uses: actions/upload-artifact@v4
-      with:
-        name: x86_${{ steps.current-time.outputs.formattedTime }}_pdb
-        path: Bin/Release (lite)/*.pdb
-
-  arm64ec_build:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
-      
-    - name: Run msbuild
-      run: msbuild TrafficMonitor_Lite.sln -p:configuration="Release (lite)" -p:platform=ARM64EC -p:platformToolset=v143
-      
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.0.2
-      id: current-time
-      with:
-        format: YYYYMMDD_HHmmss
-        utcOffset: "+08:00"
-
-    # - name: Move dll file path 
-    #   run: mv Bin/x64/Release/*.dll  Bin/ARM64EC/Release/
-
-    - name : Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: arm64EC_${{ steps.current-time.outputs.formattedTime }}_TrafficMonitor
-        path: |
-          Bin/ARM64EC/Release (lite)/TrafficMonitor.exe
-          Bin/ARM64EC/Release (lite)/*.dll
-
-    - name : Upload pdb files
-      uses: actions/upload-artifact@v4
-      with:
-        name: arm64EC_${{ steps.current-time.outputs.formattedTime }}_pdb
-        path: Bin/ARM64EC/Release (lite)/*.pdb
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
+      - name: Verify exact patch and versions
+        run: node build/verify-source.mjs
+      - name: Audit self-tests
+        run: node build/audit.mjs self-test
+      - name: Clean build, binary audit and portable ZIP
+        shell: powershell
+        run: ./build/build-release.ps1 -Architecture '${{ matrix.architecture }}' -Edition Lite
+      - name: Upload verified distribution only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: TrafficMonitor-1.86.1-${{ matrix.architecture }}-Lite
+          path: |
+            dist/TrafficMonitor_V1.86.1_*.zip
+            dist/TrafficMonitor_V1.86.1_*.zip.sha256
+          if-no-files-found: error
+          retention-days: 14

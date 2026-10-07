@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Imported after project definitions, only by build-release.ps1. -->
+  <PropertyGroup>
+    <LinkIncremental>false</LinkIncremental>
+    <UseOfMfc Condition="'$(ProjectName)'=='TrafficMonitor'">Static</UseOfMfc>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <AdditionalOptions>/Brepro /pathmap:&quot;$(SolutionDir)=src/&quot; %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeLibrary Condition="'$(ProjectName)'=='TrafficMonitor'">MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalOptions>/Brepro %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PreBuildEvent>
+      <Command Condition="'$(ProjectName)'=='TrafficMonitor'">echo $(ForkBuildDate) &gt; "$(ProjectDir)compile_time.txt"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+</Project>
