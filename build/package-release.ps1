@@ -22,7 +22,9 @@ if ((Get-Item $exe).VersionInfo.FileVersion -ne '1.86.1.0') { throw 'Wrong execu
 $files = [ordered]@{ 'TrafficMonitor.exe' = $exe; 'LICENSE' = (Join-Path $root 'LICENSE'); 'LICENSE_CN' = (Join-Path $root 'LICENSE_CN'); 'FORK-RELEASE.md' = (Join-Path $root 'FORK-RELEASE.md'); 'fork-build.json' = (Join-Path $out 'fork-build.json') }
 if ($Edition -eq 'Full') {
     $files['OpenHardwareMonitorApi.dll'] = Join-Path $out 'OpenHardwareMonitorApi.dll'
-    $files['LibreHardwareMonitorLib.dll'] = Join-Path $root 'OpenHardwareMonitorApi\LibreHardwareMonitorLib.dll'
+    foreach ($dependency in @('LibreHardwareMonitorLib.dll', 'HidSharp.dll', 'HidSharp-LICENSE.txt', 'LibreHardwareMonitor-LICENSE.html', 'dependency-build.json')) {
+        $files[$dependency] = Join-Path $root "artifacts\dependencies\bin\$dependency"
+    }
 }
 # Only tracked, named resource types; never recurse an installed application directory.
 $resources = & $git -c core.quotepath=false ls-files -- 'TrafficMonitor/language/*' 'TrafficMonitor/skins/*'

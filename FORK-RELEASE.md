@@ -13,7 +13,7 @@ This is a fork of [TrafficMonitor by zhongyang219 and contributors](https://gith
 
 As with upstream V1.86, distribution is an extract-and-run ZIP, not MSI. Extract to a new writable folder and run `TrafficMonitor.exe`. Do not overlay a running installation. No user configuration, history, logs, installed plugins or credentials are included.
 
-`_Lite.zip` is explicitly the upstream Lite edition: it does **not** include hardware temperature monitoring. Do not mistake it for the full edition. Full-edition packaging is fail-closed until the bundled LibreHardwareMonitor dependency has a clean rebuild: its upstream DLL currently embeds a PDB build path. The official full ZIP also contains a private build path in OpenHardwareMonitorApi.dll; this fork never copies that binary.
+`_Lite.zip` is explicitly the upstream Lite edition: it does **not** include hardware temperature monitoring. Do not mistake it for the full edition. Full-edition packaging rebuilds LibreHardwareMonitor 0.9.4 and HidSharp 2.1.0 from pinned source commits without debug paths, plus the C++/CLI bridge from this checkout; each binary must pass the privacy gate. The upstream dependency and official bridge embed PDB build paths and are never copied into the release. Dependency licenses and revision provenance are included. Full supports x64/x86 and requires .NET Framework 4.7.2+ and the Microsoft Visual C++ v143 runtime; ARM64EC is Lite only.
 
 The package includes the compiled application, tracked translations/skins, licenses, this notice and commit/hash provenance. Cosmetic shortcuts and Start-menu logo files from the official binary archive are not copied. MSVC/MFC runtime is linked statically for the Lite build. No Microsoft installer or signing certificate is fabricated.
 

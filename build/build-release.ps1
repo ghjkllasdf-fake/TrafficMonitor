@@ -24,9 +24,9 @@ if (-not $msbuild) {
 }
 if (-not $msbuild) { throw 'MSVC v143 + MFC + Windows SDK not found. Use the fork release workflow; no global installation is performed.' }
 if ($Edition -eq 'Full') {
-    # Never silently relabel Lite as Full or reuse an installed DLL.
-    node build/audit.mjs binary OpenHardwareMonitorApi/LibreHardwareMonitorLib.dll
-    if ($LASTEXITCODE -ne 0) { throw 'Full edition blocked: upstream LibreHardwareMonitorLib.dll contains debug/private paths; rebuild the dependency before release.' }
+    if ($Architecture -eq 'ARM64EC') { throw 'Full edition requires x64 or x86 C++/CLI; ARM64EC is Lite only.' }
+    & "$PSScriptRoot\build-dependencies.ps1"
+    if ($LASTEXITCODE -ne 0) { throw 'Dependency rebuild failed.' }
 }
 $epoch = & $git show -s --format=%ct HEAD
 if ($LASTEXITCODE -ne 0) { throw 'Cannot determine commit time.' }

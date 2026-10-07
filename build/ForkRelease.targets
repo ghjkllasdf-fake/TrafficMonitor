@@ -5,6 +5,11 @@
     <LinkIncremental>false</LinkIncremental>
     <UseOfMfc Condition="'$(ProjectName)'=='TrafficMonitor'">Static</UseOfMfc>
   </PropertyGroup>
+  <ItemGroup Condition="'$(ProjectName)'=='OpenHardwareMonitorApi'">
+    <Reference Update="LibreHardwareMonitorLib">
+      <HintPath>$(MSBuildThisFileDirectory)..\artifacts\dependencies\bin\LibreHardwareMonitorLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <DebugInformationFormat>None</DebugInformationFormat>
