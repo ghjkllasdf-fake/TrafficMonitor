@@ -32,7 +32,7 @@ for (let i = 0; i < bytes.readUInt16LE(pe + 6); i++) {
       // Only vendor MFC/ATL source diagnostics, never arbitrary user paths.
       if (!/[\\/]atlmfc[\\/]/i.test(value) || !/\.(?:cpp|c|h|hpp)$/i.test(value)) continue;
       const basename = path.win32.basename(value);
-      const replacement = 'vendor/mfc/' + '_'.repeat(value.length - basename.length - 11) + '/' + basename;
+      const replacement = 'vendor/mfc/' + '_'.repeat(value.length - basename.length - 12) + '/' + basename;
       assert.equal(replacement.length, value.length);
       const start = offset + match.index * width;
       Buffer.from(replacement, encoding).copy(bytes, start);
